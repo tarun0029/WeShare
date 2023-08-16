@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Container } from "@material-ui/core";
+import Navbar from "./components/Navbar/Navbar.js";
+import { BrowserRouter, Switch, Route ,Redirect} from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import Home from "./components/Home/Home.js";
+import Auth from "./components/Auth/Auth.js";
+import PostDetails from './components/PostDetails/PostDetails.jsx'
 
-function App() {
+const App = () => {
+
+   const user = JSON.parse(localStorage.getItem('profile'));
+   
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <GoogleOAuthProvider clientId="145438146866-cp94u70bdc9gn47t1sc0ibt871qlq5rh.apps.googleusercontent.com">
+        <Container maxidth="xl">
+          <Navbar />    
+          <Switch>  
+            <Route path="/" exact component={() => <Redirect to ="/posts"/>} />
+            <Route path="/posts" exact component = {Home} />
+            <Route path="/posts/search" exact component = {Home} />
+            <Route path = "/posts/:id" component={PostDetails} />
+            <Route path="/auth" exact component={()=> (!user ? <Auth /> : <Redirect to = "posts/" />)}/>
+          </Switch>
+        </Container>
+      </GoogleOAuthProvider>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
